@@ -2279,11 +2279,24 @@
     };
   }
 
-  // Load voices dynamically (needed for chrome/safari)
+  // Load voices dynamically — with retry polling for iOS which loads voices late
   populateVoices();
   if (synth.onvoiceschanged !== undefined) {
     synth.onvoiceschanged = populateVoices;
   }
+  // iOS Safari often returns 0 voices on first call — poll until they appear
+  let voiceRetries = 0;
+  const voicePoller = setInterval(() => {
+    voiceRetries++;
+    const v = synth.getVoices();
+    if (v.length > 0) {
+      allVoices = v;
+      filterAndPopulateVoiceDropdown();
+      clearInterval(voicePoller);
+    } else if (voiceRetries > 25) {
+      clearInterval(voicePoller);
+    }
+  }, 200);
 
   voiceSearchInput.oninput = filterAndPopulateVoiceDropdown;
   langFilter.onchange = filterAndPopulateVoiceDropdown;
@@ -2722,6 +2735,7 @@
     miniPlayIcon.setAttribute('fill', 'currentColor');
     miniPlayIcon.innerHTML = `<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>`;
     
+    startSilentAudio(); // Keep iOS audio session alive during narration
     speakSentence(idx);
   }
 
@@ -2737,7 +2751,7 @@
         visualizer.classList.remove('playing');
         
         clearSentenceHighlights();
-        
+        stopSilentAudio(); // Release iOS audio session when done
         miniPlayIcon.innerHTML = `<polygon points="5,3 19,12 5,21"/>`;
         progressFill.style.width = '100%';
         floatingPillText.textContent = 'Finished reading';
@@ -2859,6 +2873,7 @@
     visualizer.classList.remove('playing');
     
     miniPlayIcon.innerHTML = `<polygon points="5,3 19,12 5,21"/>`;
+    stopSilentAudio(); // Release iOS audio session on stop
     
     if (sentences.length > 0) {
       floatingPillText.textContent = 'Narrator stopped';
@@ -3065,27 +3080,29 @@
     });
   }
 
-  // ─── iOS AUDIO KEEP-ALIVE SYSTEM ───
-  let keepAliveAudioCtx;
-  function unlockAudioEngine() {
-    if (keepAliveAudioCtx) return;
-    keepAliveAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    (function maintainActiveConnection() {
-      const buffer = keepAliveAudioCtx.createBuffer(1, 1, 22050);
-      const source = keepAliveAudioCtx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(keepAliveAudioCtx.destination);
-      source.start();
-      
-      setTimeout(() => {
-        if (isSpeaking || isPaused) {
-          maintainActiveConnection();
-        }
-      }, 9500);
-    })();
+  // ─── iOS AUDIO SESSION KEEP-ALIVE ───
+  // Uses a real silent looping <audio> element — the ONLY technique that
+  // registers an active media session on iOS so the lock screen shows controls.
+  const silentAudio = document.createElement('audio');
+  silentAudio.setAttribute('loop', '');
+  silentAudio.setAttribute('preload', 'none');
+  // A 0.5-second silent mp3 encoded as a data URI (44 bytes, valid MP3 silence)
+  silentAudio.src = 'data:audio/mp3;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEtpdCB2MS4yLjExIC0gV2luZG93cyBNZWRpYSBQbGF5ZXIAVFJJMQAAAB4AAANjb21tZW50AEJpZ1NvdW5kS2l0IHYxLjIuMTEAVFJLMAAAACkAAANjb21tZW50AEJpZ1NvdW5kS2l0IHYxLjIuMTEgLSBXaW5kb3dzAFRBTEIAAAAYAAADY29tbWVudABCaWdTb3VuZEtpdA==';
+  silentAudio.volume = 0.001; // near-silent but not muted — muted audio is ignored by iOS
+  document.body.appendChild(silentAudio);
+
+  function startSilentAudio() {
+    silentAudio.play().catch(() => {});
   }
-  document.addEventListener('click', unlockAudioEngine, { once: true });
+  function stopSilentAudio() {
+    silentAudio.pause();
+    silentAudio.currentTime = 0;
+  }
+  // Unlock on first user gesture (required by iOS)
+  document.addEventListener('click', () => {
+    silentAudio.play().catch(() => {});
+    silentAudio.pause(); // unlock audio session but don't play yet
+  }, { once: true });
 
   // Toast notifier
   function showTemporaryToast(message) {
@@ -3126,10 +3143,20 @@
   `;
   document.head.appendChild(styleSheet);
 
-  // Gracefully pause if page is hidden (e.g. screen lock or app backgrounded on iOS)
+  // Gracefully pause on screen lock / background, and auto-resume on return
+  let wasReadingBeforeHide = false;
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && isSpeaking) {
-      btnPause.click();
+    if (document.hidden) {
+      if (isSpeaking) {
+        wasReadingBeforeHide = true;
+        btnPause.click();
+      }
+    } else {
+      // Came back to foreground — auto-resume if we were reading
+      if (wasReadingBeforeHide && isPaused) {
+        wasReadingBeforeHide = false;
+        btnPlay.click();
+      }
     }
   });
 
