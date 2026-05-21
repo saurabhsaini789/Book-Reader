@@ -1,6 +1,6 @@
 {
-  "name": "LuminaRead PDF Reader",
-  "short_name": "LuminaRead",
+  "name": "Saini's Reader",
+  "short_name": "Saini's Reader",
   "description": "Premium Offline PDF Read-Aloud Web Application",
   "start_url": "./index.html",
   "display": "standalone",

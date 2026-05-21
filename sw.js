@@ -1,4 +1,4 @@
-const CACHE_NAME = 'luminaread-v1';
+const CACHE_NAME = 'sainis-reader-v1';
 const ASSETS = [
   './',
   './index.html',

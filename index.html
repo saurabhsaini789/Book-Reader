@@ -6,9 +6,9 @@
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="LuminaRead"/>
+  <meta name="apple-mobile-web-app-title" content="Saini's Reader"/>
   <meta name="theme-color" content="#080914"/>
-  <title>LuminaRead — Premium PDF Read-Aloud</title>
+  <title>Saini's Reader — Premium PDF Read-Aloud</title>
   
   <!-- PWA Manifest & iOS meta -->
   <link rel="manifest" href="manifest.json"/>
@@ -1620,7 +1620,10 @@
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
             </svg>
           </div>
-          <h1>LuminaRead</h1>
+          <div style="display: flex; flex-direction: column; justify-content: center; line-height: 1.1;">
+            <h1 style="margin: 0; padding: 0;">Saini's Reader</h1>
+            <span style="font-size: 0.65rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 1px;">by Saurabh</span>
+          </div>
         </a>
         <div class="visualizer-container" id="visualizer">
           <div class="wave-bar"></div>
@@ -1683,7 +1686,8 @@
               <path d="M12 8v8M8 12h8"/>
             </svg>
           </div>
-          <h2>Ready to Read</h2>
+          <h2 style="font-size: 2rem; background: linear-gradient(135deg, var(--accent2), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2px;">Saini's Reader</h2>
+          <div style="font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">Made by Saurabh</div>
           <p>Import a PDF document to listen to high-quality narration, complete with word-by-word active visual highlighting.</p>
           
           <!-- Drop Zone -->
@@ -1772,7 +1776,7 @@
       </button>
     </nav>
     
-    <div class="footer-made-by">Made by Saurabh ✦ LuminaRead Premium</div>
+    <div class="footer-made-by">Made by Saurabh ✦ Saini's Reader Premium</div>
   </main>
 </div>
 
@@ -3043,7 +3047,7 @@
   // ─── MEDIA SESSION SYNCHRONIZATION ───
   if ('mediaSession' in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: 'LuminaRead Narration',
+      title: "Saini's Reader Narration",
       artist: 'Book PDF Voiceover Reader',
       album: 'Clean Text-to-Speech Engine'
     });
@@ -3126,8 +3130,8 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('LuminaRead Service Worker registered successfully!', reg.scope))
-        .catch(err => console.log('LuminaRead Service Worker registration failed:', err));
+        .then(reg => console.log("Saini's Reader Service Worker registered successfully!", reg.scope))
+        .catch(err => console.log("Saini's Reader Service Worker registration failed:", err));
     });
   }
 </script>

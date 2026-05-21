@@ -1,6 +1,6 @@
 # Walkthrough — Premium PDF Read-Aloud Web Application
 
-We have successfully designed and built a highly polished, premium, and feature-rich single-page Web Application: **LuminaRead PDF Reader**. This application elevates the baseline PDF Read-Aloud concept into a modern E-Reader product with dynamic layout configurations, high-fidelity styles, and synchronized word-level audio-visual reading controls.
+We have successfully designed and built a highly polished, premium, and feature-rich single-page Web Application: **Saini's Reader**. This application elevates the baseline PDF Read-Aloud concept into a modern E-Reader product with dynamic layout configurations, high-fidelity styles, and synchronized word-level audio-visual reading controls.
 
 ---
 
@@ -74,7 +74,9 @@ A responsive sidebar slide-out includes three distinct workspaces:
 
 ## 🚀 Free PWA Deployment via GitHub Pages
 
-Since LuminaRead is built entirely using premium, lightning-fast static HTML, JS, CSS, and manifest configuration, it is perfectly suited for **GitHub Pages**. GitHub Pages provides **free HTTPS hosting**, which is required by mobile devices to register PWA service workers and enable standalone app installation!
+Since **Saini's Reader** is built entirely using premium, lightning-fast static HTML, JS, CSS, and manifest configuration, it is perfectly suited for **GitHub Pages**. GitHub Pages provides **free HTTPS hosting**, which is required by mobile devices to register PWA service workers and enable standalone app installation!
+
+To automate deployment and keep it fast, we have set up an automated **GitHub Actions Workflow** (`.github/workflows/static.yml`).
 
 ### Deployment Steps:
 
@@ -82,12 +84,12 @@ Since LuminaRead is built entirely using premium, lightning-fast static HTML, JS
    Navigate to your GitHub repository: [saurabhsaini789/Book-Reader](https://github.com/saurabhsaini789/Book-Reader).
 2. **Access Pages**:
    On the top menu bar, click on **Settings** (the gear icon). On the left-side sidebar, scroll down to the "Code and automation" section and click on **Pages**.
-3. **Configure Branch**:
-   * Under the **Build and deployment** section, verify the source is set to **Deploy from a branch**.
-   * Under **Branch**, select `main` from the dropdown list (it will default to `None`).
-   * Leave the directory as `/ (root)` and click **Save**.
-4. **App is Live!**:
-   GitHub will automatically run an Actions build workflow (takes ~45 seconds). Once complete, your premium PWA will be securely hosted and live at:
-   👉 **`https://saurabhsaini789.github.io/Book-Reader/`**
+3. **Switch Source to GitHub Actions**:
+   * Under the **Build and deployment** section, look for **Source**.
+   * Change the dropdown from **Deploy from a branch** to **GitHub Actions**.
+4. **Push and Deploy**:
+   * As soon as you push your latest commit, GitHub Actions will trigger our custom build and deployment workflow automatically!
+   * Once complete, your premium PWA will be securely hosted and live at:
+     👉 **`https://saurabhsaini789.github.io/Book-Reader/`**
 
-Open this link in Safari on your iPhone (tap "Add to Home Screen") or Chrome on Android to install **LuminaRead** as a native app on your phone!
+Open this link in Safari on your iPhone (tap "Add to Home Screen") or Chrome on Android to install **Saini's Reader** as a native app on your phone!
