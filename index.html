@@ -2239,7 +2239,7 @@
     let matchesCount = 0;
     sorted.forEach(v => {
       const nameMatch = v.name.toLowerCase().includes(searchText);
-      const langMatch = lang === 'all' || v.lang.toLowerCase().startsWith(lang);
+      const langMatch = lang === 'all' || v.lang.toLowerCase().replace('_', '-').startsWith(lang);
       
       if (nameMatch && langMatch) {
         const option = document.createElement('option');
