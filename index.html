@@ -3126,6 +3126,13 @@
   `;
   document.head.appendChild(styleSheet);
 
+  // Gracefully pause if page is hidden (e.g. screen lock or app backgrounded on iOS)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && isSpeaking) {
+      btnPause.click();
+    }
+  });
+
   // ─── PWA OFFLINE SERVICE WORKER REGISTRATION ───
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
